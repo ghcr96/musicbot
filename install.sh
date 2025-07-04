@@ -18,7 +18,6 @@ fi
 # 2) Install system packages
 apt update
 apt install -y --no-install-recommends \
-    git \
     ffmpeg \
     libopus0 libopus-dev \
     python3 python3-venv python3-pip
