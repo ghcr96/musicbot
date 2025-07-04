@@ -34,7 +34,7 @@ async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
     print(discord.opus.is_loaded())
     if not discord.opus.is_loaded():
-        discord.opus.load_opus("/opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib")
+        discord.opus.load_opus("/usr/lib/x86_64-linux-gnu/libopus.so.0")
         print(discord.opus.is_loaded())
 
 @bot.command(name="play", help="Searches YouTube and plays the top result")
