@@ -1,5 +1,19 @@
 # Meep Discord Music Bot Changelog
 
+## [1.4.2] - 2024-07-30
+
+### Fixed
+- **Discord Voice Connection Issues**: Fixed error code 4006 (Session no longer valid)
+- **Voice Connection Timeout**: Added proper timeout handling for voice connections
+- **Connection Error Handling**: Enhanced error messages for voice connection failures
+- **Bot Intents**: Added required voice_states and guilds intents for proper voice functionality
+
+### Technical Improvements
+- **Voice Connection Logging**: Added detailed logging for voice connection attempts
+- **Reconnection Logic**: Improved voice connection with timeout and reconnect parameters
+- **Error Specificity**: Specific error handling for different voice connection failure types
+- **Connection Stability**: Better handling of voice channel moves and reconnections
+
 ## [1.4.1] - 2024-07-30
 
 ### Fixed
