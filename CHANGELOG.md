@@ -1,5 +1,29 @@
 # Meep Discord Music Bot Changelog
 
+## [1.4.4] - 2024-07-30
+
+### Fixed
+- **Discord.py Version Compatibility**: Pinned discord.py to stable version 2.3.2
+- **yt-dlp Updates**: Updated to latest yt-dlp version for YouTube compatibility
+- **Voice Connection Stability**: Improved voice connection handling for error 4006
+
+### Changed
+- **Dependency Versions**: Locked discord.py to tested compatible version
+- **YouTube Support**: Updated yt-dlp for better video extraction
+- **Library Stability**: Focused on proven stable library versions
+
+## [1.4.3] - 2024-07-30
+
+### Added
+- **Network Diagnostics**: Added comprehensive network connectivity debugging
+- **Container Support**: Enhanced support for Proxmox/LXC container deployments
+- **Voice Server Debugging**: Detailed logging for Discord voice server connections
+
+### Technical Improvements
+- **UDP Connectivity**: Better handling of container network limitations
+- **Voice Timeout**: Extended voice connection timeout for slow networks
+- **Error Documentation**: Added specific error code explanations and fixes
+
 ## [1.4.2] - 2024-07-30
 
 ### Fixed
