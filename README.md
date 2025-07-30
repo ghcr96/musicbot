@@ -257,5 +257,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Logs**: Use logging features for troubleshooting
 
 ---
-
-**Made with ❤️ for Discord music lovers**
