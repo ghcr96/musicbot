@@ -1,103 +1,259 @@
-# MusicBot
+# Meep 🎵
+
+A feature-rich Discord music bot with automatic updates, comprehensive logging, and easy deployment.
 
 ## Overview
 
-MusicBot is a Discord bot written in Python that streams audio from YouTube based on user commands.
+Meep is a Discord bot written in Python that streams audio from YouTube with advanced queue management, update notifications, and robust error handling. Designed for easy deployment on Proxmox containers with Git integration.
 
-## Features
+## ✨ Features
 
-* Play audio from YouTube search queries
-* Manage an in-memory queue per guild
-* Skip the current track
-* Stop playback and leave the voice channel
-* Automatic disconnect when the queue is empty
+### 🎵 Music Playback
+- Play audio from YouTube search queries
+- Advanced queue management per Discord server
+- Skip, pause, resume, and stop controls
+- Volume control (0-100%)
+- Loop functionality for individual tracks
+- Automatic disconnect when queue is empty
+- Now playing notifications with dynamic status updates
 
-## Prerequisites
+### 🔄 Auto-Update System
+- Automatic version checking from GitHub changelog
+- Periodic update notifications (only when out of date)
+- Manual update checking with `.checkupdate` command
+- Per-channel update notification preferences
+- Comprehensive update logging
 
-1. Python 3.9 or newer  
-2. FFmpeg installed and on your PATH  
-3. Opus library installed on your system  
-4. A Discord bot token  
-5. `pip` and `python` accessible in your environment  
+### 🛠 Management & Monitoring
+- Comprehensive logging system with file output
+- Real-time status updates in Discord
+- Error handling with graceful fallbacks
+- Git integration for version control
+- Systemd service support for production deployment
 
-## Installation
+### 🎯 Commands
 
-Follow these steps to set up the bot locally.
+**Playback:**
+- `.play <query>` - Search YouTube and play the top result
+- `.skip` - Skip the current track
+- `.stop` - Stop and leave voice channel
+- `.pause` - Pause playback
+- `.resume` - Resume playback
 
-**1. Clone the repository**
+**Queue Management:**
+- `.queue` - Show current queue
+- `.clear` - Clear the queue
+- `.nowplaying` - Show current track
+
+**Settings:**
+- `.volume <0-100>` - Set volume
+- `.loop` - Enable loop (repeat current song)
+- `.unloop` - Disable loop
+
+**Updates & Info:**
+- `.checkupdate` - Manually check for updates
+- `.updatenotify` - Enable update notifications in channel
+- `.noupdatenotify` - Disable update notifications in channel
+- `.changelog` - Show bot changelog (from GitHub)
+- `.version` - Show current version
+- `.ping` - Check bot responsiveness
+
+**Utility:**
+- `.help` - Show all commands
+
+## 🚀 Quick Installation (Proxmox/Debian/Ubuntu)
+
+**Option 1: Automated Installation Script**
 ```bash
-git clone https://github.com/youruser/musicbot.git
-cd musicbot
+# Download and run the installation script
+wget https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh
+chmod +x install.sh
+./install.sh
 ```
 
-**2. Install system dependencies**
+The script will:
+- Install all system dependencies (Python, FFmpeg, Opus, Git)
+- Set up Python virtual environment
+- Configure Git repository
+- Create systemd service
+- Generate management scripts
+- Set up your Discord bot token
 
-On macOS:
-```bash
-brew install ffmpeg opus
-```
+**Option 2: Manual Installation**
 
-On Debian-based systems:
-```bash
-sudo apt update
-sudo apt install ffmpeg libopus0 libopus-dev python3 python3-venv python3-pip git
-```
-
-## Proxmox (Optional)
-
-You can deploy the bot in a Proxmox LXC container instead of Docker:
-
-1. **Create a container**: Use a Debian or Ubuntu LXC template in Proxmox.  
-2. **Install dependencies**:
+1. **Install system dependencies:**
    ```bash
-   apt update
-   apt install -y ffmpeg libopus0 libopus-dev python3 python3-venv python3-pip git
+   sudo apt update
+   sudo apt install -y python3 python3-pip python3-venv git ffmpeg opus-tools libopus0 libopus-dev
    ```
-3. **Clone and set up**:
+
+2. **Clone repository:**
    ```bash
-   git clone https://github.com/youruser/musicbot.git
-   cd musicbot
-   python3 -m venv venv
-   source venv/bin/activate
+   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git meep-bot
+   cd meep-bot
+   ```
+
+3. **Set up Python environment:**
+   ```bash
+   python3 -m venv musicbot-venv
+   source musicbot-venv/bin/activate
    pip install -r requirements.txt
    ```
-4. **Configure**:  
-   Create a `.env` file with your Discord token:
+
+4. **Configure bot token:**
    ```bash
-   DISCORD_TOKEN=your_bot_token_here
+   cp .env.example .env
+   nano .env  # Add your DISCORD_TOKEN=your_token_here
    ```
-5. **Run**:
+
+5. **Run the bot:**
    ```bash
-   nohup python3 musicbot.py &
+   python musicbot.py
    ```
-6. **(Optional) Systemd service**:  
-   Create `/etc/systemd/system/musicbot.service` with:
-   ```ini
-   [Unit]
-   Description=Discord Music Bot
-   After=network.target
 
-   [Service]
-   Type=simple
-   WorkingDirectory=/root/musicbot
-   EnvironmentFile=/root/musicbot/.env
-   ExecStart=/root/musicbot/venv/bin/python3 /root/musicbot/musicbot.py
-   Restart=on-failure
+## 🔧 Management
 
-   [Install]
-   WantedBy=multi-user.target
+After installation, use these commands to manage Meep:
+
+```bash
+./start.sh     # Start the bot
+./stop.sh      # Stop the bot
+./status.sh    # Check bot status
+./logs.sh      # View real-time logs
+./update.sh    # Update from Git and restart
+```
+
+Or use systemd directly:
+```bash
+sudo systemctl start meep-bot
+sudo systemctl stop meep-bot
+sudo systemctl status meep-bot
+sudo journalctl -u meep-bot -f  # View logs
+```
+
+## 📋 Prerequisites
+
+- **Python 3.8+**
+- **FFmpeg** (for audio processing)
+- **Opus libraries** (for Discord voice)
+- **Git** (for version control)
+- **Discord Bot Token** (from Discord Developer Portal)
+- **Linux environment** (Proxmox container, VPS, etc.)
+
+## ⚙️ Configuration
+
+### Environment Variables
+Create a `.env` file with:
+```bash
+DISCORD_TOKEN=your_discord_bot_token_here
+```
+
+### GitHub Integration
+Update the GitHub URL in `musicbot.py`:
+```python
+GITHUB_CHANGELOG_URL = \"https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/CHANGELOG.md\"
+```
+
+## 📁 Project Structure
+
+```
+meep-bot/
+├── musicbot.py           # Main bot code
+├── requirements.txt      # Python dependencies
+├── install.sh           # Automated installation script
+├── .env                 # Environment variables (create this)
+├── .gitignore          # Git ignore patterns
+├── CHANGELOG.md        # Version history
+├── README.md           # This file
+├── start.sh            # Start bot script
+├── stop.sh             # Stop bot script
+├── status.sh           # Status check script
+├── logs.sh             # View logs script
+├── update.sh           # Update script
+└── musicbot-venv/      # Python virtual environment
+```
+
+## 🔄 Auto-Update System
+
+Meep includes a sophisticated auto-update system:
+
+1. **Automatic Checks**: Every 6 hours, checks GitHub for new versions
+2. **Smart Notifications**: Only notifies when actually out of date
+3. **Per-Channel Control**: Enable/disable notifications per channel
+4. **Manual Updates**: Use `.checkupdate` for immediate version checking
+5. **Comprehensive Logging**: All update checks are logged
+
+### Setting Up Auto-Updates
+
+1. Enable notifications in your Discord channel:
    ```
-   Then:
+   .updatenotify
+   ```
+
+2. The bot will automatically check for updates every 6 hours
+
+3. When a new version is available, you'll receive a notification
+
+4. Update manually with the provided update script:
    ```bash
-   systemctl daemon-reload
-   systemctl enable musicbot
-   systemctl start musicbot
+   ./update.sh
    ```
 
-## Contributing
+## 🐛 Troubleshooting
 
-Contributions are welcome. Feel free to file issues or submit pull requests.
+**Bot not connecting:**
+- Check your Discord token in `.env`
+- Verify bot has proper permissions in your Discord server
 
-## License
+**Audio not working:**
+- Ensure FFmpeg is installed: `ffmpeg -version`
+- Check Opus libraries: `python -c \"import discord; print(discord.opus.is_loaded())\"`
 
-This project is licensed under the MIT License.
+**Update notifications not working:**
+- Update GitHub URLs in the code
+- Check network connectivity to GitHub
+- Review logs: `./logs.sh`
+
+**Service not starting:**
+- Check systemd service: `sudo systemctl status meep-bot`
+- Review service logs: `sudo journalctl -u meep-bot`
+
+## 📊 Logging
+
+Meep provides comprehensive logging:
+- **Console output**: Real-time status updates
+- **File logging**: Persistent logs in `musicbot.log`
+- **Systemd integration**: Service logs via journalctl
+- **Update tracking**: All GitHub API calls logged
+
+View logs:
+```bash
+./logs.sh                           # Real-time service logs
+tail -f musicbot.log                # File logs
+sudo journalctl -u meep-bot -f      # Systemd logs
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Update documentation
+6. Submit a pull request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+- **Issues**: Report bugs via GitHub Issues
+- **Documentation**: Check this README and inline code comments
+- **Logs**: Use logging features for troubleshooting
+
+---
+
+**Made with ❤️ for Discord music lovers**
