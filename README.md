@@ -2,7 +2,7 @@
 
 A feature-rich Discord music bot with automatic updates, comprehensive logging, and easy deployment.
 
-**Current Version: 1.4.0**
+**Current Version: 1.4.1**
 
 ## Overview
 
@@ -257,3 +257,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Logs**: Use logging features for troubleshooting
 
 ---
+
+**Made with ❤️ for Discord music lovers**

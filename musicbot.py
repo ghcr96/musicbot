@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # ─── Configuration ────────────────────────────────────────────────────────────────
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-CURRENT_VERSION = "1.4.0"
+CURRENT_VERSION = "1.4.1"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/ghcr96/musicbot/main/CHANGELOG.md"
 
 if not TOKEN:
@@ -133,11 +133,27 @@ class Music(commands.Cog):
         best = max(formats, key=lambda f: f.get("abr") or 0)
         url, title = best["url"], info.get("title", "Unknown")
 
-        # Enqueue or play
+        # Enqueue or play  
         self.queues[guild_id].append({"url": url, "title": title})
-        source = PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
+        
+        # Create audio source with error handling
+        try:
+            logger.info(f"Creating audio source for: {title}")
+            logger.debug(f"Stream URL: {url}")
+            source = PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
+        except Exception as e:
+            logger.error(f"Failed to create audio source: {e}")
+            return await ctx.send(f"❌ Failed to create audio source: {e}")
 
         def _after(err):
+            if err:
+                logger.error(f"Audio playback error: {err}")
+                asyncio.run_coroutine_threadsafe(
+                    ctx.channel.send(f"❌ Audio playback error: {err}"),
+                    self.bot.loop
+                )
+                return
+                
             queue = self.queues[guild_id]
             if self.loop_flags.get(guild_id, False) and queue:
                 # replay same track
@@ -177,16 +193,29 @@ class Music(commands.Cog):
                     self.bot.loop
                 )
                 return
-            new_src = PCMVolumeTransformer(discord.FFmpegPCMAudio(item["url"], **FFMPEG_OPTIONS))
-            vc.play(new_src, after=lambda e: _after(e))
+            try:
+                new_src = PCMVolumeTransformer(discord.FFmpegPCMAudio(item["url"], **FFMPEG_OPTIONS))
+                vc.play(new_src, after=lambda e: _after(e))
+                logger.info(f"Started playing next song: {item['title']}")
+            except Exception as e:
+                logger.error(f"Failed to create audio source for next song: {e}")
+                asyncio.run_coroutine_threadsafe(
+                    ctx.channel.send(f"❌ Failed to play next song: {e}"),
+                    self.bot.loop
+                )
 
         if vc.is_playing():
             await ctx.send(f"Queued **{title}**")
         else:
-            vc.play(source, after=lambda e: _after(e))
-            # Update status for first song
-            await self.update_status(discord.ActivityType.playing, f"{title}")
-            await ctx.send(f"Now playing **{title}**")
+            try:
+                vc.play(source, after=lambda e: _after(e))
+                # Update status for first song
+                await self.update_status(discord.ActivityType.playing, f"{title}")
+                await ctx.send(f"Now playing **{title}**")
+                logger.info(f"Started playing: {title}")
+            except Exception as e:
+                logger.error(f"Failed to start playback: {e}")
+                await ctx.send(f"❌ Failed to start playback: {e}")
 
     @commands.command(help="Skip the current track")
     async def skip(self, ctx):
@@ -495,7 +524,7 @@ class General(commands.Cog):
     async def version(self, ctx):
         version_text = """**Meep Version**
 
-**Version 1.4.0 (Current)**"""
+**Version 1.4.1 (Current)**"""
         
         await ctx.send(version_text)
 

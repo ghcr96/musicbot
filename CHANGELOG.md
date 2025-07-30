@@ -1,5 +1,21 @@
 # Meep Discord Music Bot Changelog
 
+## [1.4.1] - 2024-07-30
+
+### Fixed
+- **Audio Streaming Issues**: Enhanced error handling for audio playback failures
+- **Join/Leave Loop**: Fixed bot joining and immediately leaving voice channels
+- **Stream URL Validation**: Better handling of invalid or expired YouTube stream URLs
+- **FFmpeg Error Handling**: Comprehensive error reporting for audio source creation
+- **Playback Debugging**: Added detailed logging for audio playback troubleshooting
+
+### Technical Improvements
+- **Enhanced Error Reporting**: All audio failures now provide specific error messages
+- **Playback Logging**: Detailed logs for audio source creation and playback events
+- **Stream Debugging**: Added debug logging for YouTube stream URLs
+- **Callback Error Handling**: Improved error handling in audio playback callbacks
+- **Next Song Protection**: Error handling for queue progression failures
+
 ## [1.4.0] - 2024-07-30
 
 ### Added
@@ -97,3 +113,50 @@
 - **FFmpeg Integration**: Audio streaming support
 
 ---
+
+## Commands Reference
+
+### Playback Commands
+- `.play <query>` - Search YouTube and play the top result
+- `.skip` - Skip the current track
+- `.stop` - Stop and leave voice channel
+- `.pause` - Pause playback
+- `.resume` - Resume playback
+
+### Queue Management
+- `.queue` - Show current queue
+- `.clear` - Clear the queue
+- `.nowplaying` - Show current track
+
+### Settings
+- `.volume <0-100>` - Set volume
+- `.loop` - Enable loop (repeat current song)
+- `.unloop` - Disable loop
+
+### Utility
+- `.ping` - Check bot responsiveness and latency
+- `.help` - Show all commands
+
+---
+
+## Technical Details
+
+### Dependencies
+- discord.py
+- yt-dlp
+- python-dotenv
+- FFmpeg (system dependency)
+
+### Features
+- Multi-guild support (separate queues per server)
+- Audio format optimization (best audio-only streams)
+- Automatic Opus library loading
+- Error handling and validation
+- Dynamic status updates
+- Queue persistence per guild
+
+### Architecture
+- Discord.py Cogs for modular command organization
+- Asynchronous audio playback with callbacks
+- Thread-safe status updates
+- Environment-based configuration 
