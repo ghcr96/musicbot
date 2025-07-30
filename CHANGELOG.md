@@ -1,5 +1,17 @@
 # Meep Discord Music Bot Changelog
 
+## [1.4.5] - 2024-07-30
+
+### Fixed
+- **Voice Connection Success**: Discord voice connection now works properly
+- **FFmpeg Integration**: Fixed FFmpeg dependency for audio source creation
+- **Connection Stability**: Resolved error 4006 with discord.py 2.3.2
+
+### Success
+- **Voice Handshake**: Successfully connecting to Discord voice channels
+- **Audio Processing**: Ready for FFmpeg-based audio streaming
+- **Container Compatibility**: Confirmed working in Proxmox LXC containers
+
 ## [1.4.4] - 2024-07-30
 
 ### Fixed
