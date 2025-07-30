@@ -96,15 +96,9 @@ cd "$MEEP_DIR"
 # Initialize Git repository or clone from remote
 print_status "Setting up Git repository..."
 if [ ! -d ".git" ]; then
-    read -p "Enter your Git repository URL (or press Enter to initialize new repo): " GIT_REPO
-    if [ -n "$GIT_REPO" ]; then
-        print_status "Cloning from $GIT_REPO"
-        git clone "$GIT_REPO" .
-    else
-        print_status "Initializing new Git repository"
-        git init
-        git config --global init.defaultBranch main
-    fi
+    GIT_REPO="https://github.com/ghcr96/musicbot.git"
+    print_status "Cloning from $GIT_REPO"
+    git clone "$GIT_REPO" .
 fi
 
 # Set up Git configuration if not already configured

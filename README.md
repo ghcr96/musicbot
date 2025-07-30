@@ -66,7 +66,7 @@ Meep is a Discord bot written in Python that streams audio from YouTube with adv
 **Option 1: Automated Installation Script**
 ```bash
 # Download and run the installation script
-wget https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/install.sh
+wget https://raw.githubusercontent.com/ghcr96/musicbot/main/install.sh
 chmod +x install.sh
 ./install.sh
 ```
@@ -89,7 +89,7 @@ The script will:
 
 2. **Clone repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git meep-bot
+   git clone https://github.com/ghcr96/musicbot.git meep-bot
    cd meep-bot
    ```
 
@@ -151,7 +151,7 @@ DISCORD_TOKEN=your_discord_bot_token_here
 ### GitHub Integration
 Update the GitHub URL in `musicbot.py`:
 ```python
-GITHUB_CHANGELOG_URL = \"https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/CHANGELOG.md\"
+GITHUB_CHANGELOG_URL = \"https://raw.githubusercontent.com/ghcr96/musicbot/main/CHANGELOG.md\"
 ```
 
 ## 📁 Project Structure

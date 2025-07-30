@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 CURRENT_VERSION = "1.3.0"
-GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/CHANGELOG.md"
+GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/ghcr96/musicbot/main/CHANGELOG.md"
 
 if not TOKEN:
     logger.error("DISCORD_TOKEN not found in environment variables.")
