@@ -1,4 +1,28 @@
-# Discord Music Bot Changelog
+# Meep Discord Music Bot Changelog
+
+## [1.4.0] - 2024-07-30
+
+### Added
+- **Auto-Update System**: Automatic version checking from GitHub changelog every 6 hours
+- **Update Notifications**: Discord notifications when new versions are available (only when out of date)
+- **Update Management Commands**: 
+  - `.checkupdate` - Manually check for updates
+  - `.updatenotify` - Enable update notifications in channel
+  - `.noupdatenotify` - Disable update notifications in channel
+- **GitHub Integration**: Live changelog fetching from GitHub repository
+- **Comprehensive Update Logging**: All GitHub API calls and version checks are logged
+- **Enhanced Documentation**: Complete README.md with installation and usage guide
+
+### Changed
+- **Changelog Source**: Now fetched live from GitHub instead of hardcoded
+- **Repository Integration**: Fully integrated with https://github.com/ghcr96/musicbot.git
+
+### Technical Improvements
+- **Semantic Versioning**: Proper version comparison logic for updates
+- **Error Handling**: Robust error handling for GitHub API failures
+- **Logging Enhancement**: All version checks logged with detailed information
+- **Channel Management**: Per-channel update notification preferences with cleanup
+- **Async HTTP**: Added aiohttp dependency for GitHub API calls
 
 ## [1.3.0] - 2024-12-30
 

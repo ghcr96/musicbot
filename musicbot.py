@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # ─── Configuration ────────────────────────────────────────────────────────────────
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-CURRENT_VERSION = "1.3.0"
+CURRENT_VERSION = "1.4.0"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/ghcr96/musicbot/main/CHANGELOG.md"
 
 if not TOKEN:
@@ -495,7 +495,7 @@ class General(commands.Cog):
     async def version(self, ctx):
         version_text = """**Meep Version**
 
-**Version 1.3.0 (Current)**"""
+**Version 1.4.0 (Current)**"""
         
         await ctx.send(version_text)
 

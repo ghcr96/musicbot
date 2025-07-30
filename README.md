@@ -2,6 +2,8 @@
 
 A feature-rich Discord music bot with automatic updates, comprehensive logging, and easy deployment.
 
+**Current Version: 1.4.0**
+
 ## Overview
 
 Meep is a Discord bot written in Python that streams audio from YouTube with advanced queue management, update notifications, and robust error handling. Designed for easy deployment on Proxmox containers with Git integration.
@@ -253,3 +255,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues**: Report bugs via GitHub Issues
 - **Documentation**: Check this README and inline code comments
 - **Logs**: Use logging features for troubleshooting
+
+---
+
+**Made with ❤️ for Discord music lovers**
