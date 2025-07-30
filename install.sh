@@ -34,9 +34,18 @@ print_error() {
 
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
-   print_error "This script should not be run as root for security reasons."
-   print_status "Please run as a regular user with sudo privileges."
-   exit 1
+   print_warning "Running as root detected!"
+   print_warning "It's recommended to run as a regular user for security reasons."
+   read -p "Do you want to continue as root? (y/N): " -n 1 -r
+   echo
+   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+       print_status "Please run as a regular user with sudo privileges."
+       exit 1
+   fi
+   print_status "Continuing as root..."
+   ROOT_USER=true
+else
+   ROOT_USER=false
 fi
 
 # Detect OS
@@ -53,29 +62,54 @@ print_status "Detected OS: $OS $VER"
 
 # Update system packages
 print_status "Updating system packages..."
-sudo apt update && sudo apt upgrade -y
+if [ "$ROOT_USER" = true ]; then
+    apt update && apt upgrade -y
+else
+    sudo apt update && sudo apt upgrade -y
+fi
 
 # Install system dependencies
 print_status "Installing system dependencies..."
-sudo apt install -y \
-    python3 \
-    python3-pip \
-    python3-venv \
-    git \
-    ffmpeg \
-    opus-tools \
-    libopus0 \
-    libopus-dev \
-    curl \
-    wget \
-    nano \
-    htop \
-    systemd
+if [ "$ROOT_USER" = true ]; then
+    apt install -y \
+        python3 \
+        python3-pip \
+        python3-venv \
+        git \
+        ffmpeg \
+        opus-tools \
+        libopus0 \
+        libopus-dev \
+        curl \
+        wget \
+        nano \
+        htop \
+        systemd
+else
+    sudo apt install -y \
+        python3 \
+        python3-pip \
+        python3-venv \
+        git \
+        ffmpeg \
+        opus-tools \
+        libopus0 \
+        libopus-dev \
+        curl \
+        wget \
+        nano \
+        htop \
+        systemd
+fi
 
 print_success "System dependencies installed"
 
 # Set up directory structure
-MEEP_DIR="$HOME/meep-bot"
+if [ "$ROOT_USER" = true ]; then
+    MEEP_DIR="/opt/meep-bot"
+else
+    MEEP_DIR="$HOME/meep-bot"
+fi
 print_status "Setting up Meep directory at $MEEP_DIR"
 
 if [ -d "$MEEP_DIR" ]; then
@@ -157,14 +191,20 @@ fi
 
 # Create systemd service
 print_status "Creating systemd service..."
-sudo tee /etc/systemd/system/meep-bot.service > /dev/null << EOF
+SERVICE_USER="$USER"
+if [ "$ROOT_USER" = true ]; then
+    SERVICE_USER="root"
+fi
+
+if [ "$ROOT_USER" = true ]; then
+    tee /etc/systemd/system/meep-bot.service > /dev/null << EOF
 [Unit]
 Description=Meep Discord Music Bot
 After=network.target
 
 [Service]
 Type=simple
-User=$USER
+User=$SERVICE_USER
 WorkingDirectory=$MEEP_DIR
 Environment=PATH=$MEEP_DIR/musicbot-venv/bin
 ExecStart=$MEEP_DIR/musicbot-venv/bin/python musicbot.py
@@ -174,16 +214,66 @@ RestartSec=10
 [Install]
 WantedBy=multi-user.target
 EOF
+else
+    sudo tee /etc/systemd/system/meep-bot.service > /dev/null << EOF
+[Unit]
+Description=Meep Discord Music Bot
+After=network.target
+
+[Service]
+Type=simple
+User=$SERVICE_USER
+WorkingDirectory=$MEEP_DIR
+Environment=PATH=$MEEP_DIR/musicbot-venv/bin
+ExecStart=$MEEP_DIR/musicbot-venv/bin/python musicbot.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+fi
 
 # Reload systemd and enable service
-sudo systemctl daemon-reload
-sudo systemctl enable meep-bot.service
+if [ "$ROOT_USER" = true ]; then
+    systemctl daemon-reload
+    systemctl enable meep-bot.service
+else
+    sudo systemctl daemon-reload
+    sudo systemctl enable meep-bot.service
+fi
 
 print_success "Systemd service created and enabled"
 
 # Create update script
 print_status "Creating update script..."
-cat > update.sh << 'EOF'
+if [ "$ROOT_USER" = true ]; then
+    cat > update.sh << 'EOF'
+#!/bin/bash
+# Meep Bot Update Script
+
+echo "🔄 Updating Meep Bot..."
+cd "$(dirname "$0")"
+
+# Stop the service
+systemctl stop meep-bot.service
+
+# Pull latest changes from Git
+git pull origin main
+
+# Activate virtual environment
+source musicbot-venv/bin/activate
+
+# Update dependencies
+pip install -r requirements.txt --upgrade
+
+# Start the service
+systemctl start meep-bot.service
+
+echo "✅ Meep Bot updated and restarted"
+EOF
+else
+    cat > update.sh << 'EOF'
 #!/bin/bash
 # Meep Bot Update Script
 
@@ -207,32 +297,57 @@ sudo systemctl start meep-bot.service
 
 echo "✅ Meep Bot updated and restarted"
 EOF
+fi
 
 chmod +x update.sh
 print_success "Update script created"
 
 # Create start/stop scripts
-cat > start.sh << EOF
+if [ "$ROOT_USER" = true ]; then
+    cat > start.sh << EOF
+#!/bin/bash
+systemctl start meep-bot.service
+echo "✅ Meep Bot started"
+EOF
+
+    cat > stop.sh << EOF
+#!/bin/bash
+systemctl stop meep-bot.service
+echo "⏹ Meep Bot stopped"
+EOF
+
+    cat > status.sh << EOF
+#!/bin/bash
+systemctl status meep-bot.service
+EOF
+
+    cat > logs.sh << EOF
+#!/bin/bash
+journalctl -u meep-bot.service -f
+EOF
+else
+    cat > start.sh << EOF
 #!/bin/bash
 sudo systemctl start meep-bot.service
 echo "✅ Meep Bot started"
 EOF
 
-cat > stop.sh << EOF
+    cat > stop.sh << EOF
 #!/bin/bash
 sudo systemctl stop meep-bot.service
 echo "⏹ Meep Bot stopped"
 EOF
 
-cat > status.sh << EOF
+    cat > status.sh << EOF
 #!/bin/bash
 sudo systemctl status meep-bot.service
 EOF
 
-cat > logs.sh << EOF
+    cat > logs.sh << EOF
 #!/bin/bash
 sudo journalctl -u meep-bot.service -f
 EOF
+fi
 
 chmod +x start.sh stop.sh status.sh logs.sh
 print_success "Management scripts created"
