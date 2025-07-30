@@ -45,9 +45,11 @@ FFMPEG_OPTIONS = {
     "options": "-vn",
 }
 
-# Only enable the intents we actually need
+# Enable required intents for voice functionality
 intents = discord.Intents.default()
 intents.message_content = True
+intents.voice_states = True
+intents.guilds = True
 
 ytdl = YoutubeDL(YTDL_OPTIONS)
 
@@ -111,9 +113,24 @@ class Music(commands.Cog):
 
         # Connect or move
         channel = ctx.author.voice.channel
-        vc = ctx.voice_client or await channel.connect()
-        if vc.channel != channel:
-            await vc.move_to(channel)
+        try:
+            if ctx.voice_client:
+                vc = ctx.voice_client
+                if vc.channel != channel:
+                    await vc.move_to(channel)
+            else:
+                logger.info(f"Connecting to voice channel: {channel.name}")
+                vc = await channel.connect(timeout=10.0, reconnect=True)
+                logger.info(f"Successfully connected to voice channel: {channel.name}")
+        except asyncio.TimeoutError:
+            logger.error("Voice connection timed out")
+            return await ctx.send("❌ Connection to voice channel timed out. Please try again.")
+        except discord.ClientException as e:
+            logger.error(f"Discord client error during voice connection: {e}")
+            return await ctx.send(f"❌ Failed to connect to voice channel: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected error during voice connection: {e}")
+            return await ctx.send(f"❌ Voice connection failed: {e}")
 
         # Fetch info
         try:
