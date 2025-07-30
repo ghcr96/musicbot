@@ -2,7 +2,7 @@
 
 A feature-rich Discord music bot with automatic updates, comprehensive logging, and easy deployment.
 
-**Current Version: 1.4.5**
+**Current Version: 1.4.6**
 
 ## Overview
 

@@ -1,5 +1,16 @@
 # Meep Discord Music Bot Changelog
 
+## [1.4.6] - 2024-07-30
+
+### Fixed
+- **FFmpeg Path Configuration**: Added explicit FFmpeg executable path (/usr/bin/ffmpeg)
+- **Audio Source Creation**: Fixed FFmpeg not found error by specifying executable location
+- **Container Compatibility**: Ensured FFmpeg works properly in containerized environments
+
+### Technical Improvements
+- **Path Resolution**: No longer relies on PATH environment variable for FFmpeg
+- **Error Prevention**: Explicit executable path prevents runtime FFmpeg detection issues
+
 ## [1.4.5] - 2024-07-30
 
 ### Fixed

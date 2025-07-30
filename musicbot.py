@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # ─── Configuration ────────────────────────────────────────────────────────────────
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-CURRENT_VERSION = "1.4.5"
+CURRENT_VERSION = "1.4.6"
 GITHUB_CHANGELOG_URL = "https://raw.githubusercontent.com/ghcr96/musicbot/main/CHANGELOG.md"
 
 if not TOKEN:
@@ -44,6 +44,9 @@ FFMPEG_OPTIONS = {
     "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
     "options": "-vn",
 }
+
+# Explicit FFmpeg executable path
+FFMPEG_EXECUTABLE = "/usr/bin/ffmpeg"
 
 # Enable required intents for voice functionality
 intents = discord.Intents.default()
@@ -157,7 +160,7 @@ class Music(commands.Cog):
         try:
             logger.info(f"Creating audio source for: {title}")
             logger.debug(f"Stream URL: {url}")
-            source = PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS))
+            source = PCMVolumeTransformer(discord.FFmpegPCMAudio(url, executable=FFMPEG_EXECUTABLE, **FFMPEG_OPTIONS))
         except Exception as e:
             logger.error(f"Failed to create audio source: {e}")
             return await ctx.send(f"❌ Failed to create audio source: {e}")
@@ -211,7 +214,7 @@ class Music(commands.Cog):
                 )
                 return
             try:
-                new_src = PCMVolumeTransformer(discord.FFmpegPCMAudio(item["url"], **FFMPEG_OPTIONS))
+                new_src = PCMVolumeTransformer(discord.FFmpegPCMAudio(item["url"], executable=FFMPEG_EXECUTABLE, **FFMPEG_OPTIONS))
                 vc.play(new_src, after=lambda e: _after(e))
                 logger.info(f"Started playing next song: {item['title']}")
             except Exception as e:
@@ -541,7 +544,7 @@ class General(commands.Cog):
     async def version(self, ctx):
         version_text = """**Meep Version**
 
-**Version 1.4.5 (Current)**"""
+**Version 1.4.6 (Current)**"""
         
         await ctx.send(version_text)
 
